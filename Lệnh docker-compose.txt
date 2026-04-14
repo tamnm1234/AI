@@ -1,0 +1,36 @@
+Lệnh 'docker-compose up -d --build' là build cả 3 container phải không? 
+
+Câu trả lời là Vừa đúng, vừa không hẳn. Hãy để mình giải thích rõ cơ chế này để bạn nắm chắc nhé:
+
+Lệnh docker-compose up -d --build thực tế sẽ quét qua toàn bộ các dịch vụ được khai báo trong file docker-compose.yml. Tuy nhiên, cách nó xử lý mỗi container là khác nhau dựa vào cấu hình của bạn:
+1. Đối với dịch vụ app (Container ai_article)
+
+    Hành động: Build thực sự.
+
+    Cơ chế: Vì bạn khai báo build: ., Docker sẽ nhìn vào Dockerfile để cài đặt Node.js, copy mã nguồn và cài đặt thư viện.
+
+    Khi nào chạy: Mỗi khi bạn sửa code trong index.js hoặc các file trong modules/, bạn bắt buộc phải dùng --build để Docker đóng gói lại những thay đổi đó vào image mới.
+
+2. Đối với qdrant và ollama
+
+    Hành động: Kiểm tra và Tải (Pull).
+
+    Cơ chế: Vì bạn khai báo image: qdrant/qdrant:latest và image: ollama/ollama:latest, Docker không hề "build" gì ở đây cả. Nó chỉ lên Docker Hub để kiểm tra xem có bản mới hơn không.
+
+    Kết quả: Nếu bạn đã có các image này trên máy, Docker sẽ bỏ qua bước tải và chỉ khởi động lại container nếu có thay đổi về cấu hình (như đổi tên hay đổi port).
+
+Tóm tắt ý nghĩa của từng thành phần trong câu lệnh:
+
+    up: Tạo và khởi động các container.
+
+    -d (detached): Chạy ngầm. Nếu không có cái này, terminal của bạn sẽ bị kẹt lại để hiện log, bạn tắt terminal là container cũng "đi" luôn.
+
+    --build: Ép Docker phải xây dựng lại các Image có khai báo build:.
+
+Mẹo nhỏ cho bạn:
+
+    Nếu bạn chỉ sửa code trong folder modules/ hoặc index.js: Dùng docker-compose up -d --build.
+
+    Nếu bạn chỉ thay đổi cấu hình trong file docker-compose.yml (ví dụ đổi tên container từ ai_article_processor thành ai_article như lúc nãy): Chỉ cần dùng docker-compose up -d là đủ, không cần --build cho mất thời gian.
+
+Bạn đã đổi tên container thành công chưa? Thử gõ docker ps để kiểm tra diện mạo mới của nó nhé!
