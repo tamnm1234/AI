@@ -1,0 +1,7 @@
+1. Cài đặt pip cho Python 3.8:
+  curl https://bootstrap.pypa.io/pip/3.8/get-pip.py -o get-pip.py
+  python3 get-pip.py
+2. Pip cài đặt các thư viện newspaper3k:
+  python3 -m pip install newspaper3k
+3. Kiểm tra tìm vị trí đường dẫn ứng dụng trên Synology, ví dụ  python bản 3.9
+  python3.9 --version
