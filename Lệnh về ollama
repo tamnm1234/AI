@@ -1,0 +1,22 @@
+Bước 1: Xóa Collection cũ:
+  curl -X DELETE http://localhost:6333/collections/vna_articles
+Bước 2: Tạo lại Collection mới (Cấu hình cho BGE-M3)
+  curl -X PUT http://localhost:6333/collections/vna_articles \
+    -H 'Content-Type: application/json' \
+    -d '{
+      "vectors": {
+        "size": 1024,
+        "distance": "Cosine"
+      }
+    }'
+Giải thích các tham số quan trọng:
+    size: 1024: Đây là kích thước Vector mà model bge-m3 tạo ra. Nếu bạn để 768 (như của các model khác), Qdrant sẽ báo lỗi hoặc trả về điểm khớp cực thấp.
+    distance: "Cosine": Đây là thuật toán so sánh độ tương đồng giữa hai vector phổ biến nhất cho tìm kiếm văn bản. Nó giúp tính toán chính xác hơn tỷ lệ phần trăm (%) khớp mà bạn mong muốn.
+Bước 3: Kiểm tra lại (Tùy chọn):
+  curl http://localhost:6333/collections/vna_articles
+
+#. Kiểm tra Model Embedding trong Ollama:
+  docker exec -it ollama_brain ollama pull bge-m3
+  docker exec -it ollama_brain ollama list
+#. Lệnh này để xem danh sách các container đang chạy:
+  docker ps
